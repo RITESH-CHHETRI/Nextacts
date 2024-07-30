@@ -16,12 +16,12 @@ jwt = JWTManager()
 def create_app():
     global mail
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = ''
+    app.config['SECRET_KEY'] = 'secretkey'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587
-    app.config['MAIL_USERNAME'] = '@gmail.com'
+    app.config['MAIL_USERNAME'] = 'a@gmail.com'
     app.config['MAIL_PASSWORD'] = ''
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
@@ -29,8 +29,13 @@ def create_app():
     jwt.init_app(app)
     moment = Moment(app)
     mail = Mail(app)
+    from .views import views
     from .auth import auth
+    from .chat import chat
+
+    app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(chat, url_prefix='/')
     from .models import User
 
     create_database(app)
@@ -39,6 +44,6 @@ def create_app():
 
 
 def create_database(app):
-    if not path.exists('src/' + DB_NAME):
+    if not path.exists('website/' + DB_NAME):
         db.create_all(app=app)
         print('Created Database!')

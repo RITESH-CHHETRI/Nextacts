@@ -24,13 +24,21 @@ class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     contact_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    added_by = db.Column(db.String(150), nullable=False)  # "phone" or "email"
+    name = db.Column(db.String(150))  # Name of the contact
     category = db.Column(db.String(100))  # Category for the contact
     
     # Define the relationship to refer to the contact user
     contact_user = db.relationship('User', foreign_keys=[contact_id])
     
     db.UniqueConstraint('user_id', 'contact_id', name='unique_contact')
+
+class Unknown(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(150))  # Name of the contact
+    email = db.Column(db.String(150), nullable=False)
+    phone = db.Column(db.String(150), nullable=False)
+
 
 class Message(db.Model):
     __tablename__ = 'messages'

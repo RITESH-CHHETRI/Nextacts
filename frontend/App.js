@@ -4,7 +4,8 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import OtpVerify from './components/OTPVerify';
-
+import Chat from './components/Chat';
+import VideoCall from './components/VideoCall';
 function App() {
   return (
     <Router>
@@ -14,7 +15,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/otpverify" element={<OtpVerify />} />
-        </Routes>
+          <Route path="/chat/:id" element={<Chat />} />
+          <Route path="/video-call/:roomName" element={<VideoCall />} />
+                  </Routes>
       </div>
     </Router>
   );

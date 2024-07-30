@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import './Login.css'; // Assuming you have a CSS file for styling
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -21,13 +25,19 @@ function Login() {
       if (response.data.error) {
         setError(response.data.error);
       } else {
-        const { access_token } = response.data;
+        const access_token = response.data.access_token;
+        const user_name = response.data.username;
         localStorage.setItem('access_token', access_token);
+        localStorage.setItem('user_name', user_name);
         navigate('/'); // Redirect to home or other page after login
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError(err.response.data.error || 'An error occurred. Please try again.');
     }
+  };
+
+  const handleSignUpRedirect = () => {
+    navigate('/signup'); // Redirect to signup page
   };
 
   return (
@@ -36,26 +46,43 @@ function Login() {
       <form onSubmit={handleLogin}>
         <div className="form-group">
           <label htmlFor="email">Email:</label>
-          <input
-            type="email"
+          <TextField
             id="email"
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            fullWidth
             required
           />
         </div>
         <div className="form-group">
           <label htmlFor="password">Password:</label>
-          <input
-            type="password"
+          <TextField
             id="password"
+            type={showPassword ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            fullWidth
             required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </div>
         {error && <p className="error-message">{error}</p>}
         <button type="submit">Login</button>
+        <p className="signup-link" onClick={handleSignUpRedirect}>
+          New user? Want to sign up?
+        </p>
       </form>
     </div>
   );
